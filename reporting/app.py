@@ -1,4 +1,3 @@
-# reporting/app.py
 from fastapi import FastAPI, HTTPException
 from typing import Optional, List
 from datetime import datetime, date
@@ -18,7 +17,6 @@ def get_stats(site_id: str, date: Optional[str] = None):
     params = {"site_id": site_id}
     where = " WHERE site_id = :site_id "
     if date:
-        # expects YYYY-MM-DD
         try:
             d = datetime.strptime(date, "%Y-%m-%d").date()
         except Exception:

@@ -1,4 +1,3 @@
-# ingestion/app.py
 from fastapi import FastAPI, HTTPException, status
 import redis, os, json
 from models import Event
@@ -7,7 +6,6 @@ app = FastAPI(title="Ingestion Service")
 
 QUEUE_NAME = "events_queue"
 
-# Redis client will be created from env
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
@@ -15,8 +13,7 @@ redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=Tr
 
 @app.post("/event", status_code=status.HTTP_202_ACCEPTED)
 def post_event(ev: Event):
-    payload = ev.dict()
-    # push quickly to Redis
+    payload = ev.model_dump()
     try:
         redis_client.lpush(QUEUE_NAME, json.dumps(payload))
     except Exception as e:
